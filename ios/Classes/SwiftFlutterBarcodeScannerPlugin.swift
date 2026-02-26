@@ -14,7 +14,17 @@ enum ScanMode:Int{
 
 public class SwiftFlutterBarcodeScannerPlugin: NSObject, FlutterPlugin, ScanBarcodeDelegate,FlutterStreamHandler {
     
-    public static var viewController = UIViewController()
+    private static var pluginRegistrar: FlutterPluginRegistrar?
+    public static var viewController: UIViewController {
+        if let vc = pluginRegistrar?.viewController {
+            return vc
+        }
+        // Fallback for older Flutter versions without UIScene lifecycle
+        if let vc = UIApplication.shared.delegate?.window??.rootViewController {
+            return vc
+        }
+        return UIViewController()
+    }
     public static var lineColor:String=""
     public static var cancelButtonText:String=""
     public static var isShowFlashIcon:Bool=false
@@ -24,7 +34,7 @@ public class SwiftFlutterBarcodeScannerPlugin: NSObject, FlutterPlugin, ScanBarc
     public static var scanMode = ScanMode.QR.index
     
     public static func register(with registrar: FlutterPluginRegistrar) {
-        viewController = (UIApplication.shared.delegate?.window??.rootViewController)!
+        pluginRegistrar = registrar
         let channel = FlutterMethodChannel(name: "flutter_barcode_scanner", binaryMessenger: registrar.messenger())
         let instance = SwiftFlutterBarcodeScannerPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)

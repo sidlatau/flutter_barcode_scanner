@@ -1,3 +1,7 @@
+## 2.0.1
+
+* iOS: do not crash when using UISceneDelegate 
+
 ## 2.0.0
 
 * Android: Fixes #137 and #132
